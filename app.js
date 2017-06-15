@@ -1,15 +1,16 @@
 var Config = require('./config/config.js');
+var passport = require('passport');
 /**
  * db connect
  */
 var mongoose = require('mongoose');
-mongoose.connect([Config.db.host, '/', Config.db.name].join(''),{
+mongoose.connect([Config.db.host, '/', Config.db.name].join(''), {
     //eventually it's a good idea to make this secure
     user: Config.db.user,
     pass: Config.db.pass
-}, function(err,data){ 
-	if(!err)
-		console.log("Connected to DB");
+}, function(err, data) {
+    if (!err)
+        console.log("Connected to DB");
 });
 /**
  * create application
@@ -27,11 +28,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+
 //passport
-var passport = require('passport');
-var jwtConfig = require('./passport/jwtConfig');
 app.use(passport.initialize());
+app.use(passport.session());
+
+var jwtConfig = require('./passport/jwtConfig');
 jwtConfig(passport);
+
+//require('./passport/jwtConfig')(passport);
 /**
  * routing
  */
@@ -41,4 +46,3 @@ app.use('/api/movies', movieRoutes(passport));
 app.use('/api/user', userRoutes(passport));
 
 module.exports = app;
-

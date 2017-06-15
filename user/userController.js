@@ -1,19 +1,20 @@
 var Config = require('../config/config.js');
 var User = require('./userSchema');
-var jwt = require('jwt-simple');
+//var jwt = require('jwt-simple');
+var jwt = require('jsonwebtoken');
 
-module.exports.login = function(req, res){
+module.exports.login = function(req, res) {
 
-    if(!req.body.username){
+    if (!req.body.username) {
         res.status(400).send('username required');
         return;
     }
-    if(!req.body.password){
+    if (!req.body.password) {
         res.status(400).send('password required');
         return;
     }
 
-    User.findOne({username: req.body.username}, function(err, user){
+    User.findOne({ username: req.body.username }, function(err, user) {
         if (err) {
             res.status(500).send(err);
             return
@@ -24,22 +25,22 @@ module.exports.login = function(req, res){
             return;
         }
         user.comparePassword(req.body.password, function(err, isMatch) {
-            if(!isMatch || err){
+            if (!isMatch || err) {
                 res.status(401).send('Invalid Credentials');
             } else {
-                res.status(200).json({token: createToken(user)});
+                res.status(200).json({ token: createToken(user) });
             }
         });
     });
 
 };
 
-module.exports.signup = function(req, res){
-    if(!req.body.username){
+module.exports.signup = function(req, res) {
+    if (!req.body.username) {
         res.status(400).send('username required');
         return;
     }
-    if(!req.body.password){
+    if (!req.body.password) {
         res.status(400).send('password required');
         return;
     }
@@ -55,14 +56,14 @@ module.exports.signup = function(req, res){
             return;
         }
 
-        res.status(201).json({token: createToken(user)});
+        res.status(201).json({ token: createToken(user) });
     });
 };
 
 module.exports.unregister = function(req, res) {
-    req.user.remove().then(function (user) {
+    req.user.remove().then(function(user) {
         res.sendStatus(200);
-    }, function(err){
+    }, function(err) {
         res.status(500).send(err);
     });
 };
@@ -75,5 +76,8 @@ function createToken(user) {
         }
 
     };
-    return jwt.encode(tokenPayload,Config.auth.jwtSecret);
+    return "JWT " + jwt.sign(user, Config.auth.jwtSecret, {
+        expiresIn: 604800
+    });
+    //return "JWT " + jwt.encode(tokenPayload, Config.auth.jwtSecret);
 };
