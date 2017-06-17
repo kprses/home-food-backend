@@ -14,16 +14,17 @@ function offerRoutes(passport) {
     router.use(mw.unless({ method: ['OPTIONS'] }));
 
     router.route('/')
-        .post(offerController.createOffer);
+        .post(offerController.createOffer)
+        .get(offerController.getOffers);
 
     //         router.route('/')
     //     .post(offerController.createOffer)
     //     .get(movieController.getMovies);
 
-    // router.route('/:movie_id')
-    //     .get(movieController.getMovie)
-    //     .put(movieController.putMovie)
-    //     .delete(movieController.deleteMovie);
+    router.route('/:offer_id')
+         .get(offerController.getOffer)
+         .put(offerController.putOffer)
+         .delete(offerController.deleteOffer);
 
     return router;
 }

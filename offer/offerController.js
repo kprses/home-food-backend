@@ -26,7 +26,7 @@ exports.getOffers = function(req, res) {
     });
 };
 
-exports.getOffers = function(req, res) {
+exports.getOffer = function(req, res) {
     // Use the Movie model to find a specific movie
     Movie.findById(req.params.offer_id, function(err, offer) {
         if (err) {
@@ -34,7 +34,7 @@ exports.getOffers = function(req, res) {
             return;
         };
 
-        res.json(offer);
+        res.json(offer);ewr
     });
 };
 
@@ -70,6 +70,3 @@ exports.deleteOffer= function(req, res) {
         res.sendStatus(200);
     });
 };
-// TO DO:
-//GET ALL, GET BY ID, UPDATE, AND DELETE 
-// ANALOGOUS TO THE MOVIE APP CRUD
