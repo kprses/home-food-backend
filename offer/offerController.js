@@ -16,6 +16,58 @@ exports.createOffer = function(req, res) {
     });
 };
 
-// TO DO:
-//GET ALL, GET BY ID, UPDATE, AND DELETE 
-// ANALOGOUS TO THE MOVIE APP CRUD
+// Create endpoint /api/offers for GET
+exports.getOffers = function(req, res) {
+    Offer.find(function(err, offers) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json(offers);
+    });
+};
+
+exports.getOffer = function(req, res) {
+    // Use the Movie model to find a specific movie
+    Movie.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+
+        res.json(offer);ewr
+    });
+};
+
+// Create endpoint /api/offers/:offer_id for PUT
+exports.putOffer = function(req, res) {
+    // Use the Offer model to find a specific offer and update it
+    Offer.findByIdAndUpdate(
+        req.params.offer_id,
+        req.body,
+        {
+            //pass the new object to cb function
+            new: true,
+            //run validations
+            runValidators: true
+        }, function (err, offer) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json(offer);
+    });
+};
+
+// Create endpoint /api/offers/:offer_id for DELETE
+exports.deleteOffer= function(req, res) {
+    // Use the Beer model to find a specific beer and remove it
+    Offer.findById(req.params.offer_id, function(err, m) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        m.remove();
+        res.sendStatus(200);
+    });
+};
