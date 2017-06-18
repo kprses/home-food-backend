@@ -4,6 +4,7 @@ var passport = require('passport');
  * db connect
  */
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 mongoose.connect([Config.db.host, '/', Config.db.name].join(''), {
     //eventually it's a good idea to make this secure
     user: Config.db.user,
