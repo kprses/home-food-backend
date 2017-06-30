@@ -1,13 +1,13 @@
 // importing Movie model
-var Offer = require('./offerSchema');
-exports.createOffer = function(req, res) {
-    var offer = new Offer(req.body);
+var Order = require('./orderSchema');
+exports.createOrder = function(req, res) {
+    var order = new Order(req.body);
     //do not allow user to fake identity. The user who postet the movie must be the same user that is logged in
     // if (!req.user.equals(offer.user)) {
     //     console.log("DOSO");
     //     res.sendStatus(401);
     // }
-    offer.save(function(err, m) {
+    order.save(function(err, m) {
         if (err) {
             res.status(400).send(err);
             return;
@@ -17,52 +17,52 @@ exports.createOffer = function(req, res) {
 };
 
 // Create endpoint /api/offers for GET
-exports.getOffers = function(req, res) {
-    Offer.find(function(err, offers) {
+exports.getOrders = function(req, res) {
+    Order.find(function(err, orders) {
         if (err) {
             res.status(400).send(err);
             return;
         }
-        res.json(offers);
+        res.json(orders);
     });
 };
 
-exports.getOffer = function(req, res) {
+exports.getOrder = function(req, res) {
     // Use the Movie model to find a specific movie
-    Offer.findById(req.params.offer_id, function(err, offer) {
+    Order.findById(req.params.order_id, function(err, order) {
         if (err) {
             res.status(400).send(err)
             return;
         };
 
-        res.json(offer);
+        res.json(order);
     });
 };
 
 // Create endpoint /api/offers/:offer_id for PUT
-exports.putOffer = function(req, res) {
+exports.putOrder = function(req, res) {
     // Use the Offer model to find a specific offer and update it
-    Offer.findByIdAndUpdate(
-        req.params.offer_id,
+    Order.findByIdAndUpdate(
+        req.params.order_id,
         req.body,
         {
             //pass the new object to cb function
             new: true,
             //run validations
             runValidators: true
-        }, function (err, offer) {
+        }, function (err, order) {
         if (err) {
             res.status(400).send(err);
             return;
         }
-        res.json(offer);
+        res.json(order);
     });
 };
 
 // Create endpoint /api/offers/:offer_id for DELETE
-exports.deleteOffer= function(req, res) {
+exports.deleteOrder= function(req, res) {
     // Use the Beer model to find a specific beer and remove it
-    Offer.findById(req.params.offer_id, function(err, m) {
+    Order.findById(req.params.order_id, function(err, m) {
         if (err) {
             res.status(400).send(err);
             return;
