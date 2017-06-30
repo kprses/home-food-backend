@@ -11,6 +11,10 @@ var Offer = new mongoose.Schema({
     handoutDatetimeStart: Date,
     handoutDatetimeEnd: Date,
     description: String,
+    vegan: Boolean,
+    vegetarian: Boolean,
+    halal: Boolean,
+    bio: Boolean,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
