@@ -52,7 +52,7 @@ exports.getOffers = function(req, res) {
 
 exports.getOffer = function(req, res) {
     // Use the Movie model to find a specific movie
-    Movie.findById(req.params.offer_id, function(err, offer) {
+    Offer.findById(req.params.offer_id, function(err, offer) {
         if (err) {
             res.status(400).send(err)
             return;

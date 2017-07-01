@@ -1,0 +1,1 @@
+var Offer = require('./offer/offerSchema');

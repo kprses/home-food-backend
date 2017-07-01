@@ -11,7 +11,7 @@ mongoose.connect([Config.db.host, '/', Config.db.name].join(''), {
     pass: Config.db.pass
 }, function(err, data) {
     if (!err)
-        console.log("Connected to DB");
+        console.log(Config.db.name);
 });
 /**
  * create application
