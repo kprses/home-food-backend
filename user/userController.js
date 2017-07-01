@@ -28,7 +28,7 @@ module.exports.login = function(req, res) {
             if (!isMatch || err) {
                 res.status(401).send('Invalid Credentials');
             } else {
-                res.status(200).json({ token: createToken(user) });
+                res.status(200).json({ token: createToken(user), userId: user._id });
             }
         });
     });

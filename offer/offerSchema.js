@@ -3,7 +3,10 @@ var mongoose = require('mongoose');
 
 // Define offer schema
 var Offer = new mongoose.Schema({
-    title: String,
+    title: {
+        type: String,
+        required: [true, 'Title is required field.']
+    },
     imageFolder: String,
     price: Number,
     ingredients: String,
@@ -15,6 +18,7 @@ var Offer = new mongoose.Schema({
     vegetarian: Boolean,
     halal: Boolean,
     bio: Boolean,
+    imagesFolder: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

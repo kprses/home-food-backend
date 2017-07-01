@@ -41,19 +41,19 @@ exports.putMovie = function(req, res) {
     // Use the Movie model to find a specific movie and update it
     Movie.findByIdAndUpdate(
         req.params.movie_id,
-        req.body,
-        {
+        req.body, {
             //pass the new object to cb function
             new: true,
             //run validations
             runValidators: true
-        }, function (err, movie) {
-        if (err) {
-            res.status(400).send(err);
-            return;
-        }
-        res.json(movie);
-    });
+        },
+        function(err, movie) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(movie);
+        });
 };
 // Create endpoint /api/movies/:movie_id for DELETE
 exports.deleteMovie = function(req, res) {
