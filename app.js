@@ -92,9 +92,11 @@ var userRoutes = require("./user/userRoutes");
 var movieRoutes = require("./movie/movieRoutes");
 var offerRoutes = require("./offer/offerRoutes");
 var orderRoutes = require("./order/orderRoutes");
+var feedbackRoutes = require("./feedback/feedbackRoutes");
 app.use('/api/movies', movieRoutes(passport));
 app.use('/api/user', userRoutes(passport));
 app.use('/api/offer', offerRoutes(passport));
 app.use('/api/order', orderRoutes(passport));
+app.use('/api/feedback', feedbackRoutes(passport));
 
 module.exports = app;
