@@ -9,9 +9,11 @@ mongoose.connect([Config.db.host, '/', Config.db.name].join(''), {
     //eventually it's a good idea to make this secure
     user: Config.db.user,
     pass: Config.db.pass
-}, function(err, data) {
-    if (!err)
-        console.log(Config.db.name);
+}, function(err, db) {
+    if (!err) {
+        console.log("Connected to database:", Config.db.name);
+    }
+
 });
 /**
  * create application
@@ -49,19 +51,23 @@ var upload = multer({ storage: storage });*/
 ////////////////////////   OR   /////////////////////////////////////
 
 app.use(function(req, res, next) {
+
+
+    //decoded = jwt.verify(authorization, secret.secretToken);
+
     res.setHeader("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
     res.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
-    res.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept");
+    res.setHeader("Access-Control-Allow-Headers", "Authorization, Origin, X-Requested-With, Content-Type, Accept, LoadedElements");
     res.setHeader("Access-Control-Allow-Credentials", true);
     next();
 });
+
+///////////////////////// END OF CORS SETTINGS //////////////////////////////
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
-
-///////////////////////// END OF CORS SETTINGS //////////////////////////////
 
 //passport
 app.use(passport.initialize());
@@ -69,21 +75,6 @@ app.use(passport.session());
 
 var jwtConfig = require('./passport/jwtConfig');
 jwtConfig(passport);
-
-/*console.log("Initialize Multer");
-app.use(multer({
-    dest: path.join(__dirname, DIR),
-    rename: function(fieldname, filename) {
-        console.log("RENAMING...");
-        return filename + Date.now();
-    },
-    onFileUploadStart: function(file) {
-        console.log(file.originalname + ' is starting ...');
-    },
-    onFileUploadComplete: function(file) {
-        console.log(file.fieldname + ' uploaded to  ' + file.path);
-    }
-}).any());*/
 
 /**
  * routing

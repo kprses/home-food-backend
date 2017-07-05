@@ -8,7 +8,6 @@ var rootFolder = path.dirname(require.main.filename);
 exports.savePictures = function(req, res) {
 
     var offerPath = path.join(rootFolder, "/uploads/users/" + req.params.user_id + "/" + req.params.offer_id);
-    console.log(offerPath);
 
     Offer.update({ _id: req.params.offer_id }, {
             imagesFolder: offerPath
@@ -25,7 +24,12 @@ exports.savePictures = function(req, res) {
 exports.createOffer = function(req, res) {
 
     var offer = new Offer(req.body);
-
+    offer.dateCreated = new Date();
+    offer.user = req.user._id; // WE ALWAYS HAVE OBJECT USER IN REQUEST BECAUSE OF PASSPORT LOGIC AND WE ALWAYS SET USER DATA ON SERVER
+    // SO THAT CLIENT CANNOT MANIPULATE WITH IDENTITY
+    //             ||
+    //             ||
+    //             \/
     //do not allow user to fake identity. The user who postet the movie must be the same user that is logged in
     // if (!req.user.equals(offer.user)) {
     //     res.sendStatus(401);
@@ -39,14 +43,27 @@ exports.createOffer = function(req, res) {
     });
 };
 
-// Create endpoint /api/offers for GET
+// Endpoint /api/offers for GET
 exports.getOffers = function(req, res) {
-    Offer.find(function(err, offers) {
+
+    var loadedElementsNumber = parseInt(req.headers.loadedelements);
+
+    /*    Offer.find(function(err, offers) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(offers);
+        });*/
+
+    Offer.find({ "user": req.user._id }, null, { sort: { dateCreated: -1 }, skip: loadedElementsNumber, limit: 15 }, function(err, offers) {
         if (err) {
             res.status(400).send(err);
             return;
         }
+
         res.json(offers);
+
     });
 };
 

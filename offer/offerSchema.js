@@ -19,6 +19,7 @@ var Offer = new mongoose.Schema({
     halal: Boolean,
     bio: Boolean,
     imagesFolder: String,
+    dateCreated: Date,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
