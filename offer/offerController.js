@@ -25,6 +25,7 @@ exports.createOffer = function(req, res) {
 
     var offer = new Offer(req.body);
     offer.dateCreated = new Date();
+    offer.status = "None";
     offer.user = req.user._id; // WE ALWAYS HAVE OBJECT USER IN REQUEST BECAUSE OF PASSPORT LOGIC AND WE ALWAYS SET USER DATA ON SERVER
     // SO THAT CLIENT CANNOT MANIPULATE WITH IDENTITY
     //             ||
@@ -109,5 +110,27 @@ exports.deleteOffer = function(req, res) {
         }
         m.remove();
         res.sendStatus(200);
+    });
+};
+
+exports.changeStatusToOrdered = function(req, res) {
+    Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+        offer.status = "Ordered";
+        res.json(offer);
+    });
+};
+
+exports.changeStatusToConfirmed = function(req, res) {
+    Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+        offer.status = "Confirmed";
+        res.json(offer);
     });
 };
