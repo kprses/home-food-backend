@@ -2,6 +2,7 @@
 var Order = require('./orderSchema');
 exports.createOrder = function(req, res) {
     var order = new Order(req.body);
+    order.randNum = generateRandom();
     //do not allow user to fake identity. The user who postet the movie must be the same user that is logged in
     // if (!req.user.equals(offer.user)) {
     //     console.log("DOSO");
@@ -71,3 +72,16 @@ exports.deleteOrder= function(req, res) {
         res.sendStatus(200);
     });
 };
+
+    generateRandom = function() {
+    var text = "";
+    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+
+        for (var i = 0; i < 10; i++) {
+            text += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        return text;
+        console.log("somethingggg");
+
+}
