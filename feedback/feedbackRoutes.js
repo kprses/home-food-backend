@@ -20,7 +20,8 @@ function feedbackRoutes(passport) {
     //         router.route('/')
     //     .post(offerController.createOffer)
     //     .get(movieController.getMovies);
-
+    router.route('/getByUser/:user')
+        .get(feedbackController.getFeedbackByUser);
     router.route('/:feedback_id')
          .get(feedbackController.getFeedback)
          .put(feedbackController.putFeedback)
