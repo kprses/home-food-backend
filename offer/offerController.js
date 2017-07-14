@@ -26,6 +26,7 @@ exports.createOffer = function(req, res) {
 
     var offer = new Offer(req.body);
     offer.dateCreated = new Date();
+    offer.status = "None";
     offer.user = req.user._id; // WE ALWAYS HAVE OBJECT USER IN REQUEST BECAUSE OF PASSPORT LOGIC AND WE ALWAYS SET USER DATA ON SERVER
     // SO THAT CLIENT CANNOT MANIPULATE WITH IDENTITY
     //             ||
@@ -115,16 +116,25 @@ exports.deleteOffer = function(req, res) {
 
 exports.getDisplayImageForOffer = function(req, res) {
 
-    /*Offer.findById(req.params.offer_id, function(err, offer) {
-        if (err) {
-            res.status(400).send(err)
-            return;
-        };
+    if (!offer.imagesFolder) {
+        res.json("");
+        return;
+    }
 
-        var files = fs.readdirSync(offer.imagesFolder);
-        if (files != null)
-            res.sendFile(files[0], { root: offer.imagesFolder });
-    });*/
+    try {
+        var files = fs.readdirSync(path.join(rootFolder, offer.imagesFolder));
+
+        if (files != null) {
+            var imgUrl = "http://localhost:3000" + offer.imagesFolder + "/" + files[0];
+            res.json(imgUrl);
+        }
+    } catch (ex) {
+        res.json("");
+    }
+}
+
+
+exports.changeStatusToConfirmed = function(req, res) {
 
     Offer.findById(req.params.offer_id, function(err, offer) {
         if (err) {
@@ -132,22 +142,7 @@ exports.getDisplayImageForOffer = function(req, res) {
             return;
         };
 
-        if (!offer.imagesFolder) {
-            res.json("");
-            return;
-        }
-
-        try {
-            var files = fs.readdirSync(path.join(rootFolder, offer.imagesFolder));
-
-            if (files != null) {
-                var imgUrl = "http://localhost:3000" + offer.imagesFolder + "/" + files[0];
-                res.json(imgUrl);
-            }
-        } catch (ex) {
-            res.json("");
-        }
+        offer.status = "Confirmed";
+        res.json(offer);
     });
-
-
-}
+};

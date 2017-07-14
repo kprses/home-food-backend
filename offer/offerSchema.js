@@ -21,6 +21,7 @@ var Offer = new mongoose.Schema({
     imagesFolder: String,
     dateCreated: Date,
     place: String,
+    status: String,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

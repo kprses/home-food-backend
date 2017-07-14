@@ -82,6 +82,4 @@ exports.deleteOrder= function(req, res) {
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         }
         return text;
-        console.log("somethingggg");
-
 }
