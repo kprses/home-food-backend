@@ -22,6 +22,7 @@ var Offer = new mongoose.Schema({
     dateCreated: Date,
     place: String,
     status: String,
+    active: Boolean,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

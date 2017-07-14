@@ -1,5 +1,6 @@
 // importing Offer model
 var Offer = require('./offerSchema');
+var Order = require('../order/orderSchema');
 var multer = require('multer');
 var path = require('path');
 var fs = require('fs');
@@ -27,6 +28,7 @@ exports.createOffer = function(req, res) {
     var offer = new Offer(req.body);
     offer.dateCreated = new Date();
     offer.status = "None";
+    offer.active = true;
     offer.user = req.user._id; // WE ALWAYS HAVE OBJECT USER IN REQUEST BECAUSE OF PASSPORT LOGIC AND WE ALWAYS SET USER DATA ON SERVER
     // SO THAT CLIENT CANNOT MANIPULATE WITH IDENTITY
     //             ||
@@ -58,7 +60,7 @@ exports.getOffers = function(req, res) {
             res.json(offers);
         });*/
 
-    Offer.find({ "user": req.user._id }, null, { sort: { dateCreated: -1 }, skip: loadedElementsNumber, limit: 15 }, function(err, offers) {
+    Offer.find({ $and: [{ "user": req.user._id }, { "active": true }] }, null, { sort: { dateCreated: -1 }, skip: loadedElementsNumber, limit: 15 }, function(err, offers) {
         if (err) {
             res.status(400).send(err);
             return;
@@ -103,35 +105,50 @@ exports.putOffer = function(req, res) {
 
 // Create endpoint /api/offers/:offer_id for DELETE
 exports.deleteOffer = function(req, res) {
-    // Use the Beer model to find a specific beer and remove it
-    Offer.findById(req.params.offer_id, function(err, m) {
+
+    Order.update({ "offer": req.params._id }, { status: 'Canceled' }, { multi: true }, function(err, orders) {
         if (err) {
             res.status(400).send(err);
             return;
         }
-        m.remove();
+    })
+
+    // Use the Beer model to find a specific beer and remove it
+    Offer.findByIdAndUpdate(req.params.offer_id, { active: false, status: "Deleted" }, function(err, m) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.sendStatus(200);
     });
 };
 
 exports.getDisplayImageForOffer = function(req, res) {
 
-    if (!offer.imagesFolder) {
-        res.json("");
-        return;
-    }
-
-    try {
-        var files = fs.readdirSync(path.join(rootFolder, offer.imagesFolder));
-
-        if (files != null) {
-            var imgUrl = "http://localhost:3000" + offer.imagesFolder + "/" + files[0];
-            res.json(imgUrl);
+    Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
         }
-    } catch (ex) {
-        res.json("");
-    }
-}
+
+        if (!offer.imagesFolder) {
+            res.json("");
+            return;
+        }
+
+        try {
+            var files = fs.readdirSync(path.join(rootFolder, offer.imagesFolder));
+
+            if (files != null) {
+                var imgUrl = "http://localhost:3000" + offer.imagesFolder + "/" + files[0];
+                res.json(imgUrl);
+            }
+        } catch (ex) {
+            res.json("");
+        }
+
+    });
+};
 
 
 exports.changeStatusToConfirmed = function(req, res) {

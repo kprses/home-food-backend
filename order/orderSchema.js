@@ -8,11 +8,12 @@ var Order = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-     offer: {
+    offer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Offer'
     },
-    randNum: String
+    randNum: String,
+    status: String
 });
 
 // Export the Mongoose model
