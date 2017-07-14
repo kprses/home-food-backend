@@ -2,12 +2,13 @@
 var Offer = require('./offerSchema');
 var multer = require('multer');
 var path = require('path');
+var fs = require('fs');
 
 var rootFolder = path.dirname(require.main.filename);
 
 exports.savePictures = function(req, res) {
 
-    var offerPath = path.join(rootFolder, "/uploads/users/" + req.params.user_id + "/" + req.params.offer_id);
+    var offerPath = "/uploads/users/" + req.params.user_id + "/" + req.params.offer_id;
 
     Offer.update({ _id: req.params.offer_id }, {
             imagesFolder: offerPath
@@ -111,3 +112,42 @@ exports.deleteOffer = function(req, res) {
         res.sendStatus(200);
     });
 };
+
+exports.getDisplayImageForOffer = function(req, res) {
+
+    /*Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+
+        var files = fs.readdirSync(offer.imagesFolder);
+        if (files != null)
+            res.sendFile(files[0], { root: offer.imagesFolder });
+    });*/
+
+    Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+
+        if (!offer.imagesFolder) {
+            res.json("");
+            return;
+        }
+
+        try {
+            var files = fs.readdirSync(path.join(rootFolder, offer.imagesFolder));
+
+            if (files != null) {
+                var imgUrl = "http://localhost:3000" + offer.imagesFolder + "/" + files[0];
+                res.json(imgUrl);
+            }
+        } catch (ex) {
+            res.json("");
+        }
+    });
+
+
+}
