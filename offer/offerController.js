@@ -150,8 +150,10 @@ exports.getDisplayImageForOffer = function(req, res) {
     });
 };
 
-
 exports.changeStatusToConfirmed = function(req, res) {
+
+    console.log(req.body);
+    console.log(req.params.offer_id);
 
     Offer.findById(req.params.offer_id, function(err, offer) {
         if (err) {
@@ -159,7 +161,29 @@ exports.changeStatusToConfirmed = function(req, res) {
             return;
         };
 
-        offer.status = "Confirmed";
-        res.json(offer);
+        Order.findOne({ "offer": offer._id }, function(err, order) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+
+            if (order) {
+
+                if (req.body.confirmationCode == order.randNum) {
+
+                    offer.status = "Confirmed";
+                    offer.active = false;
+
+                    offer.save(function(err) {
+                        if (!err) {
+                            res.json(offer);
+                        }
+
+                    });
+                } else {
+                    res.status(400).send("Confirmation code is not valid!");
+                }
+            }
+        })
     });
 };

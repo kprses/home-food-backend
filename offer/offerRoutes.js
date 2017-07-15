@@ -37,6 +37,9 @@ function offerRoutes(passport) {
     router.route('/pictures/:offer_id')
         .get(offerController.getDisplayImageForOffer);
 
+    router.route('/confirm/:offer_id')
+        .put(offerController.changeStatusToConfirmed);
+
     router.route('/:offer_id')
         .get(offerController.getOffer)
         .put(offerController.putOffer)
