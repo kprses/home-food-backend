@@ -20,6 +20,9 @@ var Offer = new mongoose.Schema({
     bio: { type: Boolean, default: false },
     imagesFolder: { type: String, default: null },
     dateCreated: Date,
+    place: String,
+    status: String,
+    active: Boolean,
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'

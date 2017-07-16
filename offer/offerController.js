@@ -1,13 +1,15 @@
 // importing Offer model
 var Offer = require('./offerSchema');
+var Order = require('../order/orderSchema');
 var multer = require('multer');
 var path = require('path');
+var fs = require('fs');
 
 var rootFolder = path.dirname(require.main.filename);
 
 exports.savePictures = function(req, res) {
 
-    var offerPath = path.join(rootFolder, "/uploads/users/" + req.params.user_id + "/" + req.params.offer_id);
+    var offerPath = "/uploads/users/" + req.params.user_id + "/" + req.params.offer_id;
 
     Offer.update({ _id: req.params.offer_id }, {
             imagesFolder: offerPath
@@ -25,6 +27,8 @@ exports.createOffer = function(req, res) {
 
     var offer = new Offer(req.body);
     offer.dateCreated = new Date();
+    offer.status = "None";
+    offer.active = true;
     offer.user = req.user._id; // WE ALWAYS HAVE OBJECT USER IN REQUEST BECAUSE OF PASSPORT LOGIC AND WE ALWAYS SET USER DATA ON SERVER
     // SO THAT CLIENT CANNOT MANIPULATE WITH IDENTITY
     //             ||
@@ -56,7 +60,7 @@ exports.getOffers = function(req, res) {
             res.json(offers);
         });*/
 
-    Offer.find({ "user": req.user._id }, null, { sort: { dateCreated: -1 }, skip: loadedElementsNumber, limit: 15 }, function(err, offers) {
+    Offer.find({ $and: [{ "user": req.user._id }, { "active": true }] }, null, { sort: { dateCreated: -1 }, skip: loadedElementsNumber, limit: 15 }, function(err, offers) {
         if (err) {
             res.status(400).send(err);
             return;
@@ -118,13 +122,85 @@ exports.putOffer = function(req, res) {
 
 // Create endpoint /api/offers/:offer_id for DELETE
 exports.deleteOffer = function(req, res) {
-    // Use the Beer model to find a specific beer and remove it
-    Offer.findById(req.params.offer_id, function(err, m) {
+
+    Order.update({ "offer": req.params._id }, { status: 'Canceled' }, { multi: true }, function(err, orders) {
         if (err) {
             res.status(400).send(err);
             return;
         }
-        m.remove();
+    })
+
+    // Use the Beer model to find a specific beer and remove it
+    Offer.findByIdAndUpdate(req.params.offer_id, { active: false, status: "Deleted" }, function(err, m) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
         res.sendStatus(200);
+    });
+};
+
+exports.getDisplayImageForOffer = function(req, res) {
+
+    Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        }
+
+        if (!offer.imagesFolder) {
+            res.json("");
+            return;
+        }
+
+        try {
+            var files = fs.readdirSync(path.join(rootFolder, offer.imagesFolder));
+
+            if (files != null) {
+                var imgUrl = "http://localhost:3000" + offer.imagesFolder + "/" + files[0];
+                res.json(imgUrl);
+            }
+        } catch (ex) {
+            res.json("");
+        }
+
+    });
+};
+
+exports.changeStatusToConfirmed = function(req, res) {
+
+    console.log(req.body);
+    console.log(req.params.offer_id);
+
+    Offer.findById(req.params.offer_id, function(err, offer) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+
+        Order.findOne({ "offer": offer._id }, function(err, order) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+
+            if (order) {
+
+                if (req.body.confirmationCode == order.randNum) {
+
+                    offer.status = "Confirmed";
+                    offer.active = false;
+
+                    offer.save(function(err) {
+                        if (!err) {
+                            res.json(offer);
+                        }
+
+                    });
+                } else {
+                    res.status(400).send("Confirmation code is not valid!");
+                }
+            }
+        })
     });
 };

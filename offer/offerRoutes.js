@@ -16,15 +16,29 @@ function offerRoutes(passport) {
     mw.unless = unless;
 
     //middleware
-    router.use(mw.unless({ method: ['OPTIONS'] }));
+    router.use(mw.unless({
+        method: ['OPTIONS'],
+        custom: function(req) {
+            if (req.originalUrl.includes('/api/offer/pictures') && req.method == 'GET') {
+                return true;
+            } else
+                return false;
+        }
+
+    }));
 
     router.route('/')
         .get(offerController.getAllOffers)
         .post(offerController.createOffer);
-        
 
     router.route('/pictures/:user_id/:offer_id')
         .post(upload.any(), offerController.savePictures);
+
+    router.route('/pictures/:offer_id')
+        .get(offerController.getDisplayImageForOffer);
+
+    router.route('/confirm/:offer_id')
+        .put(offerController.changeStatusToConfirmed);
 
     router.route('/:offer_id')
         .get(offerController.getOffer)

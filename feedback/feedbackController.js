@@ -39,6 +39,35 @@ exports.getFeedback = function(req, res) {
     });
 };
 
+
+exports.getFeedbackByUser = function(req, res) {
+    var a = {"user": req.params.user};
+    Feedback.find(a, function(err, feedbacks){
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+        
+        res.json(feedbacks);
+    });
+
+    /*    Offer.find(function(err, offers) {
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(offers);
+        });*/
+
+};
+
+
+
+
+
+
+
+
 // Create endpoint /api/feedbacks/:feedback_id for PUT
 exports.putFeedback = function(req, res) {
     // Use the Offer model to find a specific offer and update it

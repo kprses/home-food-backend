@@ -1,5 +1,9 @@
 var Config = require('./config/config.js');
 var passport = require('passport');
+
+var path = require('path');
+
+var rootFolder = path.dirname(require.main.filename);
 /**
  * db connect
  */
@@ -26,6 +30,8 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 
 var app = express();
+
+var uploadFolderPath = path.join(rootFolder, "/uploads/users");
 
 //var upload = multer({ dest: path.join(__dirname, DIR) });
 
@@ -69,6 +75,9 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
+//app.use(express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname + '/uploads')));
+
 //passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -89,5 +98,13 @@ app.use('/api/user', userRoutes(passport));
 app.use('/api/offer', offerRoutes(passport));
 app.use('/api/order', orderRoutes(passport));
 app.use('/api/feedback', feedbackRoutes(passport));
+
+/*app.use(function(req, res, next) {
+    if (req.originalUrl.includes('/api/offer/pictures') && req.method == 'GET') {
+        return next();
+    } else {
+        //DO SOMETHING
+    }
+});*/
 
 module.exports = app;
