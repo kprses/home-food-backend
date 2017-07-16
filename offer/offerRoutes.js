@@ -19,9 +19,9 @@ function offerRoutes(passport) {
     router.use(mw.unless({ method: ['OPTIONS'] }));
 
     router.route('/')
-        .get(offerController.getOffers)
+        .get(offerController.getAllOffers)
         .post(offerController.createOffer);
-
+        
 
     router.route('/pictures/:user_id/:offer_id')
         .post(upload.any(), offerController.savePictures);

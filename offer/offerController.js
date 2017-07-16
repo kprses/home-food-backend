@@ -30,7 +30,7 @@ exports.createOffer = function(req, res) {
     //             ||
     //             ||
     //             \/
-    //do not allow user to fake identity. The user who postet the movie must be the same user that is logged in
+    //do not allow user to fake identity. The user who postet the offer must be the same user that is logged in
     // if (!req.user.equals(offer.user)) {
     //     res.sendStatus(401);
     // }
@@ -65,6 +65,23 @@ exports.getOffers = function(req, res) {
         res.json(offers);
 
     });
+};
+
+// Getting all offers for search
+exports.getAllOffers = function(req, res) {
+
+    //var loadedElementsNumber = parseInt(req.headers.loadedelements);
+
+       Offer.find({},function(err, offers) {
+           console.log(offers.length);
+            if (err) {
+                res.status(400).send(err);
+                return;
+            }
+            res.json(offers);
+        });
+
+    
 };
 
 exports.getOffer = function(req, res) {
