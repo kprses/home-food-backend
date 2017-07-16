@@ -68,6 +68,18 @@ module.exports.unregister = function(req, res) {
     });
 };
 
+module.exports.getUser = function(req, res) {
+    // Use the Movie model to find a specific movie
+    User.findById(req.params.user_id, function(err, user) {
+        if (err) {
+            res.status(400).send(err)
+            return;
+        };
+
+        res.json(user);
+    });
+};
+
 function createToken(user) {
     var tokenPayload = {
         user: {
