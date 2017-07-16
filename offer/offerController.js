@@ -152,9 +152,6 @@ exports.getDisplayImageForOffer = function(req, res) {
 
 exports.changeStatusToConfirmed = function(req, res) {
 
-    console.log(req.body);
-    console.log(req.params.offer_id);
-
     Offer.findById(req.params.offer_id, function(err, offer) {
         if (err) {
             res.status(400).send(err)
