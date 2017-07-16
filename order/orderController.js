@@ -22,8 +22,6 @@ exports.createOrder = function(req, res) {
     order.dateTime = new Date();
     order.status = "Initial";
 
-    console.log("HAVEE ", req.user._id);
-
     order.user = req.user._id;
 
     order.save(function(err, newOrder) {
