@@ -24,12 +24,14 @@ function offerRoutes(passport) {
             } else
                 return false;
         }
-
     }));
 
     router.route('/')
-        .get(offerController.getAllOffers)
+        .get(offerController.getOffersForUser)
         .post(offerController.createOffer);
+
+    router.route('/search')
+        .get(offerController.getAllOffers);
 
     router.route('/pictures/:user_id/:offer_id')
         .post(upload.any(), offerController.savePictures);

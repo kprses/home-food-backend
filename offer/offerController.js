@@ -48,7 +48,7 @@ exports.createOffer = function(req, res) {
 };
 
 // Endpoint /api/offers for GET
-exports.getOffers = function(req, res) {
+exports.getOffersForUser = function(req, res) {
 
     var loadedElementsNumber = parseInt(req.headers.loadedelements);
 
@@ -65,7 +65,6 @@ exports.getOffers = function(req, res) {
             res.status(400).send(err);
             return;
         }
-
         res.json(offers);
 
     });
@@ -73,19 +72,17 @@ exports.getOffers = function(req, res) {
 
 // Getting all offers for search
 exports.getAllOffers = function(req, res) {
-
     //var loadedElementsNumber = parseInt(req.headers.loadedelements);
 
-       Offer.find({},function(err, offers) {
-           console.log(offers.length);
-            if (err) {
-                res.status(400).send(err);
-                return;
-            }
-            res.json(offers);
-        });
+    Offer.find({}, function(err, offers) {
+        if (err) {
+            res.status(400).send(err);
+            return;
+        }
+        res.json(offers);
+    });
 
-    
+
 };
 
 exports.getOffer = function(req, res) {

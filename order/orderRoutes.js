@@ -17,14 +17,17 @@ function orderRoutes(passport) {
         .post(orderController.createOrder)
         .get(orderController.getOrders);
 
+    router.route('/code/:offer_id')
+        .get(orderController.getConfirmationCodeForSeller);
+
     //         router.route('/')
     //     .post(offerController.createOffer)
     //     .get(movieController.getMovies);
 
     router.route('/:order_id')
-         .get(orderController.getOrder)
-         .put(orderController.putOrder)
-         .delete(orderController.deleteOrder);
+        .get(orderController.getOrder)
+        .put(orderController.putOrder)
+        .delete(orderController.deleteOrder);
 
 
     return router;

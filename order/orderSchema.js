@@ -13,7 +13,13 @@ var Order = new mongoose.Schema({
         ref: 'Offer'
     },
     randNum: String,
-    status: String
+    status: String,
+    paymentOption: String,
+    price: Number,
+    cardName: String,
+    credtCardNumber: String,
+    expiringMonth: String,
+    expiringYear: String
 });
 
 // Export the Mongoose model
