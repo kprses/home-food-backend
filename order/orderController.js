@@ -38,7 +38,8 @@ exports.createOrder = function(req, res) {
         });
 
         var orderJson = newOrder.toObject();
-        orderJson.randNum = "....." + newOrder.randNum.substr(4, 5);
+        orderJson.randNum = "";
+        orderJson.randNum = "....." + newOrder.randNum.substr(5, 5);
 
         res.status(201).send(orderJson);
     });

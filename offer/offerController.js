@@ -74,7 +74,7 @@ exports.getOffersForUser = function(req, res) {
 exports.getAllOffers = function(req, res) {
     //var loadedElementsNumber = parseInt(req.headers.loadedelements);
 
-    Offer.find({}, function(err, offers) {
+    Offer.find({ active: true }, function(err, offers) {
         if (err) {
             res.status(400).send(err);
             return;
